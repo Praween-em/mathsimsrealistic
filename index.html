@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Applications of Trigonometry — Interactive</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --paper:#faf9f6;--grid:#e8e6e1;--grid-maj:#d4d1c9;
+  --sf:rgba(255,255,255,.96);--s2:#ffffff;--bd:#d8d5cd;
+  --tx:#1c1917;--t2:#57534e;--ac:#1d4ed8;--g:#15803d;--w:#b45309;
+  --pk:#be123c;--pu:#7c3aed;--rd:#dc2626;--sky:#eef6fc;
+  --r:8px;--f:'Source Serif 4',Georgia,serif;--mo:'IBM Plex Mono',monospace;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--f);background:var(--paper);color:var(--tx)}
+body{background-image:
+  linear-gradient(var(--grid) 1px,transparent 1px),
+  linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+  linear-gradient(var(--grid-maj) 1px,transparent 1px),
+  linear-gradient(90deg,var(--grid-maj) 1px,transparent 1px);
+background-size:12px 12px,12px 12px,60px 60px,60px 60px}
+#app{display:flex;flex-direction:column;height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1.4rem;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;backdrop-filter:blur(10px)}
+header h1{font-size:1.05rem;font-family:var(--mo);color:var(--tx);font-weight:700;letter-spacing:-.02em}
+header span{font-size:.72rem;color:var(--t2);font-weight:400;font-family:var(--f)}
+.tabs{display:flex;gap:3px;padding:.35rem .8rem;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:.45rem .85rem;font-size:.68rem;border:1px solid transparent;background:0;color:var(--t2);cursor:pointer;border-radius:var(--r);white-space:nowrap;font-family:var(--mo);font-weight:600;transition:.15s}
+.tab:hover{color:var(--tx);background:var(--s2);border-color:var(--bd)}
+.tab.a{color:var(--ac);background:#fff;border-color:#bfdbfe;box-shadow:0 1px 2px rgba(29,78,216,.08)}
+.mn{display:flex;flex:1;overflow:hidden}
+.lt{width:58%;height:100%;display:flex;align-items:center;justify-content:center;padding:.8rem;position:relative;overflow:hidden}
+.rt{width:42%;height:100%;padding:1rem 1.1rem;border-left:1px solid var(--bd);display:flex;flex-direction:column;gap:.75rem;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;background:rgba(255,255,255,.72)}
+.rt h2{font-size:1.05rem;color:var(--tx);font-family:var(--mo);font-weight:700;line-height:1.2;margin-bottom:.1rem}
+.rt p{font-size:.82rem;color:var(--t2);line-height:1.55;font-weight:400}
+.rt h2+p{margin-top:-.2rem}
+canvas{border-radius:var(--r);background:var(--s2);touch-action:none;border:1px solid var(--bd);box-shadow:0 2px 8px rgba(28,25,23,.06),inset 0 0 0 1px rgba(255,255,255,.8);max-width:100%;max-height:100%;object-fit:contain}
+.ct{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:.2rem 0}
+.ct label{font-size:.72rem;color:var(--t2);font-family:var(--mo);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.ct input[type=range]{width:120px;accent-color:var(--ac);cursor:pointer;height:5px}
+.b{padding:6px 12px;border:1px solid var(--bd);background:#fff;color:var(--tx);border-radius:var(--r);cursor:pointer;font-size:.75rem;font-family:var(--mo);font-weight:600;transition:.12s}
+.b:hover{border-color:var(--ac);color:var(--ac)}.b.on{background:var(--ac);color:#fff;border-color:var(--ac)}.b:disabled{opacity:.35;cursor:default}
+.fm{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:.75rem .9rem;font-family:var(--mo);font-size:.78rem;color:var(--w);line-height:1.75;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.fm .katex{font-size:1.05em}.vl{color:var(--g);font-weight:700}
+.sec{display:none;width:100%;height:100%}.sec.vis{display:flex}
+.ni{width:58px;padding:4px 6px;background:#fff;border:1.5px solid var(--bd);color:var(--ac);font-family:var(--mo);font-size:.78rem;border-radius:6px;text-align:center;outline:0;font-weight:700}
+.ni:focus{border-color:var(--ac);box-shadow:0 0 0 2px rgba(29,78,216,.12)}
+.hint{font-size:.72rem;color:var(--t2);font-style:italic;line-height:1.4}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem .9rem;font-size:.68rem;color:var(--t2);font-family:var(--mo)}
+.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;vertical-align:middle;margin-right:3px}
+@media(max-width:768px){.mn{flex-direction:column}.lt{width:100%;height:46%}.rt{width:100%;height:54%;border-left:0;border-top:1px solid var(--bd)}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><h1>Applications of Trigonometry</h1><span>Class X · Chapter 12 · SCERT Telangana</span></header>
+<div class="tabs" id="tB"></div>
+<div class="mn" id="mA"></div>
+</div>
+<script>
+function K(t){try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}}
+function KD(t){try{return katex.renderToString(t,{throwOnError:false,displayMode:true})}catch(e){return t}}
+const T=[
+  {i:'el',l:'① Elevation'},{i:'dp',l:'② Depression'},{i:'tw',l:'③ Clock Tower'},
+  {i:'pl',l:'④ Electric Pole'},{i:'hl',l:'⑤ Helicopter'},{i:'tt',l:'⑥ Two △'},
+  {i:'bl',l:'⑦ Balloon'},{i:'rf',l:'⑧ Reference'}
+];
+let at='el',aR={};
+const PI=Math.PI,Dg=r=>r*180/PI,Rd=d=>d*PI/180;
+function F(v,n){n=n??2;return Math.abs(v)<1e-4?'0':(+v).toFixed(n)}
+function cl(v,a,b){return Math.max(a,Math.min(b,v))}
+
+function init(){
+  const b=document.getElementById('tB'),m=document.getElementById('mA');
+  T.forEach(t=>{
+    const n=document.createElement('button');n.className='tab'+(t.i===at?' a':'');n.textContent=t.l;
+    n.onclick=()=>sw(t.i);n.id='t_'+t.i;b.appendChild(n);
+    const s=document.createElement('div');s.className='sec'+(t.i===at?' vis':'');s.id='s_'+t.i;m.appendChild(s);
+  });
+  buildAll();window.addEventListener('resize',buildAll);
+}
+function sw(i){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('a'));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('vis'));
+  document.getElementById('t_'+i).classList.add('a');
+  document.getElementById('s_'+i).classList.add('vis');
+  at=i;Object.keys(aR).forEach(k=>{cancelAnimationFrame(aR[k]);delete aR[k]});
+  buildAll();
+}
+function mL(s){if(s.querySelector('.lt'))return;s.innerHTML='<div class="lt"></div><div class="rt"></div>'}
+function gC(s,id){
+  let c=s.querySelector('#'+id);
+  if(!c){c=document.createElement('canvas');c.id=id;s.querySelector('.lt').appendChild(c)}
+  const r=s.querySelector('.lt').getBoundingClientRect();
+  const z=Math.min(r.width,r.height,window.innerHeight*0.55)*0.88;
+  c.width=z*2;c.height=z*2;
+  c.style.width=z+'px';c.style.height=z+'px';
+  return c;
+}
+function sA(si,ii,cb,mn,mx){
+  const s=document.getElementById(si),p=document.getElementById(ii);
+  function g(v){v=cl(Math.round(v*10)/10,mn,mx);s.value=v;p.value=v;cb(v)}
+  s.oninput=()=>g(+s.value);p.onchange=()=>g(+p.value);p.onkeydown=e=>{if(e.key==='Enter')g(+p.value)};
+  return g;
+}
+
+/* ─── Canvas helpers: graph paper + realistic objects ─── */
+function drawPaperGrid(g,W,H){
+  g.fillStyle='#faf9f6';g.fillRect(0,0,W,H);
+  const step=W/40;
+  g.strokeStyle='#eceae4';g.lineWidth=1;
+  for(let x=0;x<=W;x+=step){g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
+  for(let y=0;y<=H;y+=step){g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke()}
+  g.strokeStyle='#ddd9d0';g.lineWidth=1.2;
+  for(let x=0;x<=W;x+=step*5){g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
+  for(let y=0;y<=H;y+=step*5){g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke()}
+}
+function drawSkyGround(g,W,H,gy,ratio){
+  ratio=ratio??0.72;
+  const skyH=gy;
+  const gr= g.createLinearGradient(0,0,0,skyH);
+  gr.addColorStop(0,'#e8f4fc');gr.addColorStop(1,'#f5f9fc');
+  g.fillStyle=gr;g.fillRect(0,0,W,skyH);
+  const gg=g.createLinearGradient(0,gy,0,H);
+  gg.addColorStop(0,'#c4a574');gg.addColorStop(0.15,'#b8956a');gg.addColorStop(1,'#a6845c');
+  g.fillRect(0,gy,W,H-gy);
+  g.strokeStyle='#8b6914';g.lineWidth=2;
+  g.beginPath();g.moveTo(0,gy);g.lineTo(W,gy);g.stroke();
+  // grass texture
+  g.strokeStyle='rgba(90,120,60,.25)';g.lineWidth=1;
+  for(let i=0;i<W;i+=stepRand(i,14,22)){
+    const x=i+((i*7)%5);g.beginPath();g.moveTo(x,gy);g.lineTo(x+2,gy-4-Math.sin(i)*2);g.stroke();
+  }
+}
+function stepRand(i,a,b){return a+(i*13)%((b-a)||1)}
+
+function drawDimH(g,x1,x2,y,label,color){
+  color=color||'#7c3aed';
+  g.strokeStyle=color;g.fillStyle=color;g.lineWidth=1.2;
+  g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
+  [[x1,y],[x2,y]].forEach(([x,y])=>{
+    g.beginPath();g.moveTo(x,y-5);g.lineTo(x,y+5);g.stroke();
+  });
+  g.font='700 '+(g._fs||14)+'px "IBM Plex Mono"';g.textAlign='center';
+  g.fillText(label,(x1+x2)/2,y+16);g.textAlign='left';
+}
+function drawDimV(g,x,y1,y2,label,color){
+  color=color||'#7c3aed';
+  g.strokeStyle=color;g.fillStyle=color;g.lineWidth=1.2;
+  g.beginPath();g.moveTo(x,y1);g.lineTo(x,y2);g.stroke();
+  [[x,y1],[x,y2]].forEach(([x,y])=>{
+    g.beginPath();g.moveTo(x-5,y);g.lineTo(x+5,y);g.stroke();
+  });
+  g.save();g.translate(x+14,(y1+y2)/2);g.rotate(-PI/2);
+  g.font='700 '+(g._fs||14)+'px "IBM Plex Mono"';g.textAlign='center';
+  g.fillText(label,0,0);g.restore();
+}
+function drawAngleArc(g,cx,cy,r,aDeg,label){
+  const th=Rd(aDeg);
+  g.fillStyle='rgba(220,38,38,.12)';g.beginPath();g.moveTo(cx,cy);
+  g.arc(cx,cy,r,0,-th,true);g.closePath();g.fill();
+  g.strokeStyle='#dc2626';g.lineWidth=2;
+  g.beginPath();g.arc(cx,cy,r,0,-th,true);g.stroke();
+  const mid=-th/2,lx=cx+(r+18)*Math.cos(mid),ly=cy+(r+18)*Math.sin(mid);
+  g.fillStyle='#dc2626';g.font='700 '+(g._fs||14)+'px "IBM Plex Mono"';g.textAlign='center';
+  g.fillText(label,lx,ly+4);g.textAlign='left';
+}
+function drawHoriz(g,x1,x2,y){
+  g.strokeStyle='#64748b';g.lineWidth=1.5;g.setLineDash([5,4]);
+  g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();g.setLineDash([]);
+}
+function drawSight(g,x1,y1,x2,y2){
+  g.strokeStyle='#2563eb';g.lineWidth=2.2;g.setLineDash([7,5]);
+  g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.setLineDash([]);
+  // arrowhead
+  const ang=Math.atan2(y2-y1,x2-x1),sz=10;
+  g.fillStyle='#2563eb';g.beginPath();
+  g.moveTo(x2,y2);g.lineTo(x2-sz*Math.cos(ang-.35),y2-sz*Math.sin(ang-.35));
+  g.lineTo(x2-sz*Math.cos(ang+.35),y2-sz*Math.sin(ang+.35));g.closePath();g.fill();
+}
+
+function drawPerson(g,x,footY,sc){
+  sc=sc||1;const h=32*sc;
+  g.save();g.shadowColor='rgba(0,0,0,.18)';g.shadowBlur=4;g.shadowOffsetY=2;
+  g.fillStyle='rgba(0,0,0,.1)';g.beginPath();g.ellipse(x,footY-2,10*sc,3*sc,0,0,PI*2);g.fill();
+  g.shadowBlur=0;
+  // legs
+  g.strokeStyle='#334155';g.lineWidth=3*sc;g.lineCap='round';
+  g.beginPath();g.moveTo(x-4*sc,footY);g.lineTo(x-4*sc,footY-14*sc);g.stroke();
+  g.beginPath();g.moveTo(x+4*sc,footY);g.lineTo(x+4*sc,footY-14*sc);g.stroke();
+  // torso
+  g.fillStyle='#475569';g.fillRect(x-7*sc,footY-h+14*sc,14*sc,16*sc);
+  // arms
+  g.strokeStyle='#334155';g.lineWidth=2.5*sc;
+  g.beginPath();g.moveTo(x-7*sc,footY-h+18*sc);g.lineTo(x-16*sc,footY-h+26*sc);g.stroke();
+  g.beginPath();g.moveTo(x+7*sc,footY-h+18*sc);g.lineTo(x+16*sc,footY-h+26*sc);g.stroke();
+  // head
+  g.fillStyle='#fcd9b6';g.beginPath();g.arc(x,footY-h+8*sc,7*sc,0,PI*2);g.fill();
+  g.fillStyle='#1e293b';g.beginPath();g.arc(x-2*sc,footY-h+7*sc,1.2*sc,0,PI*2);g.fill();
+  g.beginPath();g.arc(x+2*sc,footY-h+7*sc,1.2*sc,0,PI*2);g.fill();
+  g.restore();
+}
+
+function drawPalmTree(g,x,gy,hPx){
+  g.save();g.shadowColor='rgba(0,0,0,.2)';g.shadowBlur=6;g.shadowOffsetY=3;
+  const trunkH=hPx*0.55,topY=gy-trunkH- hPx*0.12;
+  const tg=g.createLinearGradient(x-6,gy-trunkH,x+6,gy);
+  tg.addColorStop(0,'#9a7b2a');tg.addColorStop(1,'#6b4f12');
+  g.fillStyle=tg;g.beginPath();g.roundRect(x-6,gy-trunkH,12,trunkH,3);g.fill();
+  // fronds
+  for(let i=0;i<7;i++){
+    const fy=topY+i*(hPx*0.07),len=38-i*3;
+    g.strokeStyle=i%2?'#2d6a4f':'#40916c';g.lineWidth=2.8;g.lineCap='round';
+    g.beginPath();g.moveTo(x,fy);
+    g.quadraticCurveTo(x-len,fy+6,x-len-8,fy+20);g.stroke();
+    g.beginPath();g.moveTo(x,fy);
+    g.quadraticCurveTo(x+len,fy+6,x+len+8,fy+20);g.stroke();
+  }
+  g.fillStyle='#52b788';g.beginPath();g.arc(x,topY,5,0,PI*2);g.fill();
+  g.restore();
+}
+
+function drawClockTower(g,x,gy,hPx){
+  g.save();g.shadowColor='rgba(0,0,0,.15)';g.shadowBlur=8;g.shadowOffsetY=4;
+  const w=42,topY=gy-hPx;
+  const bg=g.createLinearGradient(x-w/2,topY,x+w/2,gy);
+  bg.addColorStop(0,'#f1f5f9');bg.addColorStop(1,'#cbd5e1');
+  g.fillStyle=bg;g.fillRect(x-w/2,topY,w,hPx);
+  g.strokeStyle='#94a3b8';g.lineWidth=1.5;g.strokeRect(x-w/2,topY,w,hPx);
+  for(let row=0;row<Math.floor(hPx/28);row++){
+    for(let col=0;col<2;col++){
+      g.fillStyle='rgba(191,219,254,.85)';g.fillRect(x-w/2+8+col*18,topY+14+row*28,10,14);
+      g.strokeStyle='#94a3b8';g.strokeRect(x-w/2+8+col*18,topY+14+row*28,10,14);
+    }
+  }
+  g.fillStyle='#64748b';g.beginPath();
+  g.moveTo(x,topY-10);g.lineTo(x-w/2-5,topY+6);g.lineTo(x+w/2+5,topY+6);g.closePath();g.fill();
+  g.fillStyle='#fff';g.beginPath();g.arc(x,topY+22,16,0,PI*2);g.fill();
+  g.strokeStyle='#475569';g.lineWidth=2;g.stroke();
+  g.strokeStyle='#1e293b';g.lineWidth=1.8;g.lineCap='round';
+  g.beginPath();g.moveTo(x,topY+22);g.lineTo(x,topY+14);g.stroke();
+  g.beginPath();g.moveTo(x,topY+22);g.lineTo(x+8,topY+24);g.stroke();
+  g.restore();
+}
+
+function drawElectricPole(g,x,gy,hPx){
+  g.save();g.shadowBlur=5;g.shadowColor='rgba(0,0,0,.2)';
+  const tg=g.createLinearGradient(x-5,gy-hPx,x+5,gy);
+  tg.addColorStop(0,'#64748b');tg.addColorStop(1,'#334155');
+  g.fillStyle=tg;g.fillRect(x-5,gy-hPx,10,hPx);
+  g.strokeStyle='#1e293b';g.lineWidth=2;
+  g.beginPath();g.moveTo(x-32,gy-hPx+18);g.lineTo(x+32,gy-hPx+18);g.stroke();
+  g.beginPath();g.moveTo(x-26,gy-hPx+36);g.lineTo(x+26,gy-hPx+36);g.stroke();
+  g.fillStyle='#fbbf24';g.beginPath();g.arc(x,gy-hPx,4,0,PI*2);g.fill();
+  g.strokeStyle='#64748b';g.lineWidth=1;
+  g.beginPath();g.moveTo(x-18,gy-hPx+18);g.quadraticCurveTo(x,gy-hPx-2,x+18,gy-hPx+18);g.stroke();
+  g.restore();
+}
+
+function drawSchool(g,x,gy,hPx){
+  g.save();g.shadowBlur=8;g.shadowColor='rgba(0,0,0,.12)';
+  const w=78,topY=gy-hPx;
+  g.fillStyle='#fef3c7';g.fillRect(x-w/2,topY,w,hPx);
+  g.strokeStyle='#d97706';g.lineWidth=1.5;g.strokeRect(x-w/2,topY,w,hPx);
+  for(let r=0;r<3;r++)for(let c=0;c<4;c++){
+    g.fillStyle='#fde68a';g.fillRect(x-w/2+10+c*16,topY+12+r*24,11,16);
+    g.strokeStyle='#b45309';g.lineWidth=.8;g.strokeRect(x-w/2+10+c*16,topY+12+r*24,11,16);
+  }
+  g.fillStyle='#92400e';g.fillRect(x-14,gy-32,28,32);
+  g.fillStyle='#57534e';g.font='600 '+(g._fs||12)+'px "Source Serif 4"';g.textAlign='center';
+  g.fillText('School',x,topY-8);g.textAlign='left';
+  g.restore();
+}
+
+function drawBorewell(g,x,gy){
+  g.save();g.shadowBlur=4;g.shadowColor='rgba(0,0,0,.15)';
+  g.fillStyle='#6b7280';g.beginPath();g.roundRect(x-16,gy-26,32,26,4);g.fill();
+  g.fillStyle='#374151';g.fillRect(x-12,gy-22,24,10);
+  g.strokeStyle='#9ca3af';g.lineWidth=2;g.beginPath();g.arc(x,gy-8,6,0,PI*2);g.stroke();
+  g.fillStyle='#57534e';g.font='600 '+(g._fs||11)+'px "Source Serif 4"';g.textAlign='center';
+  g.fillText('Borewell',x,gy+14);g.textAlign='left';
+  g.restore();
+}
+
+function drawHelicopter(g,x,y){
+  g.save();g.shadowBlur=6;g.shadowColor='rgba(0,0,0,.2)';
+  g.fillStyle='rgba(0,0,0,.12)';g.beginPath();g.ellipse(x,y+10,38,7,0,0,PI*2);g.fill();
+  const bg=g.createLinearGradient(x-30,y-12,x+30,y+12);
+  bg.addColorStop(0,'#3b82f6');bg.addColorStop(1,'#1d4ed8');
+  g.fillStyle=bg;g.beginPath();g.ellipse(x,y,30,13,0,0,PI*2);g.fill();
+  g.fillStyle='rgba(147,197,253,.9)';g.fillRect(x-10,y-8,20,12);
+  g.strokeStyle='#64748b';g.lineWidth=2.5;
+  g.beginPath();g.moveTo(x-38,y-2);g.lineTo(x+38,y-2);g.stroke();
+  g.beginPath();g.moveTo(x,y-2);g.lineTo(x,y-20);g.stroke();
+  g.fillStyle='#475569';g.beginPath();g.moveTo(x-38,y-2);g.lineTo(x-46,y-6);g.lineTo(x-38,y-6);g.closePath();g.fill();
+  g.beginPath();g.moveTo(x+38,y-2);g.lineTo(x+46,y-6);g.lineTo(x+38,y-6);g.closePath();g.fill();
+  g.fillStyle='#1e40af';g.beginPath();g.moveTo(x-26,y+11);g.lineTo(x+26,y+11);g.lineTo(x+18,y+18);g.lineTo(x-18,y+18);g.closePath();g.fill();
+  g.restore();
+}
+
+function drawBalloon(g,x,y){
+  g.save();g.shadowBlur=5;g.shadowColor='rgba(0,0,0,.15)';
+  const rg=g.createRadialGradient(x-6,y-8,2,x,y,28);
+  rg.addColorStop(0,'#f87171');rg.addColorStop(1,'#b91c1c');
+  g.fillStyle=rg;g.beginPath();g.ellipse(x,y,22,28,0,0,PI*2);g.fill();
+  g.strokeStyle='#991b1b';g.lineWidth=1.2;g.stroke();
+  g.fillStyle='#7f1d1d';g.beginPath();g.moveTo(x-8,y+24);g.quadraticCurveTo(x,y+32,x+8,y+24);g.fill();
+  g.strokeStyle='#78350f';g.lineWidth=1.5;g.beginPath();g.moveTo(x,y+28);g.lineTo(x,y+55);g.stroke();
+  g.restore();
+}
+
+function bindCanvasDrag(c,getPt,setPt,onUp){
+  let drag=false;
+  const toC=e=>{
+    const r=c.getBoundingClientRect();
+    const ex=e.touches?e.touches[0].clientX:e.clientX;
+    const ey=e.touches?e.touches[0].clientY:e.clientY;
+    return {x:(ex-r.left)/r.width*c.width,y:(ey-r.top)/r.height*c.height};
+  };
+  const start=e=>{drag=true;const p=toC(e);setPt(getPt(p));e.preventDefault()};
+  const move=e=>{if(!drag)return;setPt(getPt(toC(e)))};
+  const end=()=>{if(drag&&onUp)onUp();drag=false};
+  c.addEventListener('mousedown',start);c.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',end);
+  c.addEventListener('touchstart',start,{passive:false});
+  c.addEventListener('touchmove',move,{passive:false});
+  c.addEventListener('touchend',end);
+}
+
+function buildAll(){bEl();bDp();bTw();bPl();bHl();bTt();bBl();bRf()}
+
+/* ① Elevation */
+function bEl(){
+  const sec=document.getElementById('s_el');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cEl'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.022;
+  let angle=38,dist=12,obsFrac=0.22;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Angle of Elevation</h2>
+    <p>Vijaya observes a palm tree. The <b>line of sight</b> meets the horizontal at the <b>angle of elevation</b> θ.</p>
+    <div class=ct><label>θ°</label><input type=range min=5 max=75 step=1 value=38 id=elS><input type=number min=5 max=75 step=1 value=38 class=ni id=elI></div>
+    <div class=ct><label>Distance d (m)</label><input type=range min=4 max=22 step=0.5 value=12 id=elD><input type=number min=4 max=22 step=0.5 value=12 class=ni id=elDi></div>
+    <div class=fm id=elV></div>
+    <p class=hint>Drag the observer along the ground · Adjust θ and d with sliders</p>
+    <div class=legend>
+      <span><i style="background:#2563eb"></i>Line of sight</span>
+      <span><i style="background:#64748b"></i>Horizontal</span>
+      <span><i style="background:#dc2626"></i>Angle θ</span>
+      <span><i style="background:#7c3aed"></i>Measurements</span>
+    </div>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.78,scale=(W*0.55)/22;
+    drawSkyGround(g,W,H,gy);
+    const obsX=W*obsFrac;
+    const treeX=obsX+dist*scale;
+    const h=dist*Math.tan(Rd(angle));
+    const hPx=h*scale,topY=gy-hPx;
+    const eyeY=gy-30;
+    drawPalmTree(g,treeX,gy,hPx);
+    drawPerson(g,obsX,gy);
+    drawHoriz(g,obsX,eyeY,treeX);
+    drawSight(g,obsX,eyeY,treeX,topY);
+    drawAngleArc(g,obsX,eyeY,W*.055,angle,'θ='+angle+'°');
+    drawDimH(g,obsX,treeX,gy+W*.028,'d = '+F(dist)+' m');
+    drawDimV(g,treeX+W*.035,gy,topY,'h = '+F(h)+' m');
+    g.fillStyle='#57534e';g.font='600 '+W*.018+'px "Source Serif 4"';
+    g.fillText('Eye',obsX-8,eyeY-10);g.fillText('Top of tree',treeX-28,topY-8);
+    document.getElementById('elV').innerHTML=K('\\tan '+angle+'^{\\circ} = \\dfrac{h}{'+F(dist)+'}')+' → h = <span class=vl>'+F(dist)+' × tan('+angle+'°) = '+F(h)+' m</span>';
+  }
+  sA('elS','elI',v=>{angle=v;dr()},5,75);
+  sA('elD','elDi',v=>{dist=v;dr()},4,22);
+  bindCanvasDrag(c,p=>{obsFrac=cl(p.x/W,0.08,0.55);dr()},()=>dr());
+  dr();
+}
+
+/* ② Depression */
+function bDp(){
+  const sec=document.getElementById('s_dp');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cDp'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.021;
+  let angle=32,bH=14,wellFrac=0.72;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Angle of Depression</h2>
+    <p>From the school rooftop, the borewell is seen below the horizontal — angle of depression β.</p>
+    <div class=ct><label>β°</label><input type=range min=10 max=70 step=1 value=32 id=dpS><input type=number min=10 max=70 step=1 value=32 class=ni id=dpI></div>
+    <div class=ct><label>Building h (m)</label><input type=range min=8 max=26 step=0.5 value=14 id=dpH><input type=number min=8 max=26 step=0.5 value=14 class=ni id=dpHi></div>
+    <div class=fm id=dpV></div>
+    <p class=hint>Drag the borewell left or right along the ground</p>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.78,scale=(W*0.45)/26;
+    drawSkyGround(g,W,H,gy);
+    const bldX=W*0.22,hPx=bH*scale,topY=gy-hPx,eyeY=topY+12;
+    const wellX=W*wellFrac;
+    drawSchool(g,bldX,gy,hPx);
+    drawBorewell(g,wellX,gy);
+    drawPerson(g,bldX,topY+22,0.85);
+    drawHoriz(g,bldX,eyeY,wellX+40);
+    drawSight(g,bldX,eyeY,wellX,gy-4);
+    drawAngleArc(g,bldX,eyeY,W*.05,angle,'β='+angle+'°');
+    drawDimV(g,bldX-W*.04,gy,topY,F(bH)+' m');
+    drawDimH(g,bldX,wellX,gy+W*.028,'d = '+F((wellX-bldX)/scale)+' m');
+    const ideal=bH/Math.tan(Rd(angle));
+    document.getElementById('dpV').innerHTML=K('\\tan '+angle+'^{\\circ} = \\dfrac{'+F(bH)+'}{d}')+' → d = <span class=vl>'+F(ideal)+' m</span> (when aligned)';
+  }
+  sA('dpS','dpI',v=>{angle=v;dr()},10,70);
+  sA('dpH','dpHi',v=>{bH=v;dr()},8,26);
+  bindCanvasDrag(c,p=>{wellFrac=cl(p.x/W,0.45,0.92);dr()},()=>dr());
+  dr();
+}
+
+/* ③ Clock Tower */
+function bTw(){
+  const sec=document.getElementById('s_tw');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cTw'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.021;
+  let alpha=45,d=15;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Clock Tower · Example 1</h2>
+    <p>Top observed at elevation α, foot at distance d. Find h = d · tan α.</p>
+    <div class=ct><label>α°</label><input type=range min=15 max=75 step=1 value=45 id=twS><input type=number min=15 max=75 step=1 value=45 class=ni id=twI></div>
+    <div class=ct><label>d (m)</label><input type=range min=5 max=30 step=1 value=15 id=twD><input type=number min=5 max=30 step=1 value=15 class=ni id=twDi></div>
+    <div class=fm id=twV></div>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.78,scale=(W*0.5)/30;
+    drawSkyGround(g,W,H,gy);
+    const towerX=W*0.72,obsX=towerX-d*scale;
+    const h=d*Math.tan(Rd(alpha)),hPx=h*scale,topY=gy-hPx-8,eyeY=gy-30;
+    drawClockTower(g,towerX,gy,hPx+20);
+    drawPerson(g,obsX,gy);
+    drawHoriz(g,obsX,eyeY,towerX);
+    drawSight(g,obsX,eyeY,towerX,topY);
+    drawAngleArc(g,obsX,eyeY,W*.055,alpha,'α='+alpha+'°');
+    drawDimH(g,obsX,towerX,gy+W*.028,'d = '+d+' m');
+    drawDimV(g,towerX+W*.04,gy,topY,'h = '+F(h,2)+' m');
+    document.getElementById('twV').innerHTML=K('h = d \\tan\\alpha = '+d+' × \\tan('+alpha+'^{\\circ})')+' = <span class=vl>'+F(h,2)+' m</span>';
+  }
+  sA('twS','twI',v=>{alpha=v;dr()},15,75);
+  sA('twD','twDi',v=>{d=v;dr()},5,30);
+  dr();
+}
+
+/* ④ Electric Pole */
+function bPl(){
+  const sec=document.getElementById('s_pl');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cPl'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.021;
+  let angle=60,dist=8;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Electric Pole · Example 4</h2>
+    <p>Observer at 8 m from foot, elevation 60°. tan 60° = h/8 → h = 8√3 m.</p>
+    <div class=ct><label>∠AOB°</label><input type=range min=30 max=80 step=1 value=60 id=plS><input type=number min=30 max=80 step=1 value=60 class=ni id=plI></div>
+    <div class=ct><label>OB (m)</label><input type=range min=4 max=16 step=0.5 value=8 id=plD><input type=number min=4 max=16 step=0.5 value=8 class=ni id=plDi></div>
+    <div class=fm id=plV></div>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.78,scale=(W*0.45)/16;
+    drawSkyGround(g,W,H,gy);
+    const poleX=W*0.68,obsX=poleX-dist*scale;
+    const h=dist*Math.tan(Rd(angle)),hPx=Math.min(h*scale,H*0.55),topY=gy-hPx,eyeY=gy-30;
+    drawElectricPole(g,poleX,gy,hPx);
+    drawPerson(g,obsX,gy);
+    drawHoriz(g,obsX,eyeY,poleX);
+    drawSight(g,obsX,eyeY,poleX,topY);
+    drawAngleArc(g,obsX,eyeY,W*.055,angle,angle+'°');
+    drawDimH(g,obsX,poleX,gy+W*.028,'OB = '+F(dist)+' m');
+    drawDimV(g,poleX+W*.038,gy,topY,'AB = h = '+F(h,2)+' m');
+    g.fillStyle='#1e293b';g.font='700 '+W*.022+'px "IBM Plex Mono"';
+    g.fillText('O',obsX-6,gy+W*.04);g.fillText('B',poleX-4,gy+W*.04);g.fillText('A',poleX+6,topY-6);
+    const s3=Math.sqrt(3);
+    document.getElementById('plV').innerHTML=(angle===60&&dist===8)
+      ? K('\\tan 60^{\\circ} = \\sqrt{3} = \\dfrac{h}{8}')+' → h = <span class=vl>8√3 ≈ '+F(8*s3,2)+' m</span>'
+      : K('\\tan '+angle+'^{\\circ} = \\dfrac{h}{'+F(dist)+'}}')+' → h = <span class=vl>'+F(h,2)+' m</span>';
+  }
+  sA('plS','plI',v=>{angle=v;dr()},30,80);
+  sA('plD','plDi',v=>{dist=v;dr()},4,16);
+  dr();
+}
+
+/* ⑤ Helicopter */
+function bHl(){
+  const sec=document.getElementById('s_hl');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cHl'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.02;
+  let height=500,angle=45,personFrac=0.62;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Helicopter · Example 5</h2>
+    <p>Rajender at 500 m observes a person with depression 45°. sin 45° = 500/x.</p>
+    <div class=ct><label>Height OA (m)</label><input type=range min=200 max=800 step=10 value=500 id=hlH><input type=number min=200 max=800 step=10 value=500 class=ni id=hlHi></div>
+    <div class=ct><label>Depression°</label><input type=range min=20 max=70 step=1 value=45 id=hlS><input type=number min=20 max=70 step=1 value=45 class=ni id=hlI></div>
+    <div class=fm id=hlV></div>
+    <p class=hint>Drag the person on the ground</p>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.82,scale=(H*0.55)/800;
+    drawSkyGround(g,W,H,gy);
+    const heliX=W*0.28,heliY=gy-height*scale,eyeY=heliY+14;
+    const personX=W*personFrac;
+    drawHelicopter(g,heliX,heliY);
+    drawPerson(g,personX,gy,0.9);
+    drawHoriz(g,heliX,eyeY,personX+50);
+    drawSight(g,heliX,eyeY,personX,gy-28);
+    drawAngleArc(g,heliX,eyeY,W*.048,angle,angle+'°');
+    drawDimV(g,heliX-W*.05,gy,heliY+14,'OA='+height+' m');
+    drawDimH(g,heliX,personX,gy+W*.022,'OB ≈ '+F(height/Math.tan(Rd(angle)),1)+' m');
+    g.fillStyle='#57534e';g.font='600 '+W*.017+'px "Source Serif 4"';
+    g.fillText('P (Helicopter)',heliX-20,heliY-12);g.fillText('B (Person)',personX-20,gy+W*.038);
+    const x=height/Math.sin(Rd(angle));
+    document.getElementById('hlV').innerHTML=(angle===45&&height===500)
+      ? K('\\sin 45^{\\circ} = \\dfrac{1}{\\sqrt{2}} = \\dfrac{500}{x}')+' → x = <span class=vl>500√2 ≈ '+F(500*Math.sqrt(2),1)+' m</span>'
+      : K('\\sin '+angle+'^{\\circ} = \\dfrac{'+height+'}{x}')+' → x = <span class=vl>'+F(x,1)+' m</span>';
+  }
+  sA('hlH','hlHi',v=>{height=v;dr()},200,800);
+  sA('hlS','hlI',v=>{angle=v;dr()},20,70);
+  bindCanvasDrag(c,p=>{personFrac=cl(p.x/W,0.4,0.88);dr()},()=>dr());
+  dr();
+}
+
+/* ⑥ Two Triangles */
+function bTt(){
+  const sec=document.getElementById('s_tt');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cTt'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.02;
+  let gap=11,h=15,bFrac=0.58;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Two Observation Points · § 12.3</h2>
+    <p>At B: elevation 45°. Move 11 m to A: elevation 30°. Find h using two triangles.</p>
+    <div class=ct><label>AB (m)</label><input type=range min=5 max=20 step=0.5 value=11 id=ttG><input type=number min=5 max=20 step=0.5 value=11 class=ni id=ttGi></div>
+    <div class=ct><label>Tree h (m)</label><input type=range min=5 max=25 step=0.5 value=15 id=ttH><input type=number min=5 max=25 step=0.5 value=15 class=ni id=ttHi></div>
+    <div class=fm id=ttV></div>
+    <p class=hint>Drag observer B along the baseline</p>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.78,scale=(W*0.42)/20;
+    drawSkyGround(g,W,H,gy);
+    const treeX=W*0.82,bX=W*bFrac,aX=bX-gap*scale;
+    const hPx=h*scale,topY=gy-hPx,eye=28;
+    const bc=(treeX-bX)/scale,ac=bc+gap;
+    const angB=Dg(Math.atan2(h,bc)),angA=Dg(Math.atan2(h,ac));
+    drawPalmTree(g,treeX,gy,hPx+12);
+    drawPerson(g,aX,gy);drawPerson(g,bX,gy);
+    drawSight(g,aX,gy-eye,treeX,topY);drawSight(g,bX,gy-eye,treeX,topY);
+    drawAngleArc(g,aX,gy-eye,W*.042,angA,Math.round(angA)+'°');
+    drawAngleArc(g,bX,gy-eye,W*.042,angB,Math.round(angB)+'°');
+    drawDimH(g,aX,bX,gy+W*.026,'AB = '+F(gap)+' m');
+    drawDimV(g,treeX+W*.035,gy,topY,'h = '+F(h)+' m');
+    drawDimH(g,bX,treeX,gy+W*.048,'BC = '+F(bc,1)+' m');
+    g.fillStyle='#1e293b';g.font='700 '+W*.02+'px "IBM Plex Mono"';
+    g.fillText('A',aX-4,gy+W*.042);g.fillText('B',bX-4,gy+W*.042);
+    g.fillText('C',treeX+6,topY-6);g.fillText('D',treeX+4,gy+W*.042);
+    const hPdf=(gap*Math.sqrt(3))/(Math.sqrt(3)-1);
+    document.getElementById('ttV').innerHTML=
+      K('\\tan 45^{\\circ} = \\dfrac{h}{x},\\; \\tan 30^{\\circ} = \\dfrac{h}{11+x}')+'<br>At 45° & 30°, AB=11: h = <span class=vl>'+F(hPdf,2)+' m</span><br>Current: '+Math.round(angB)+'° & '+Math.round(angA)+'°';
+  }
+  sA('ttG','ttGi',v=>{gap=v;dr()},5,20);
+  sA('ttH','ttHi',v=>{h=v;dr()},5,25);
+  bindCanvasDrag(c,p=>{bFrac=cl(p.x/W,0.35,0.72);dr()},()=>dr());
+  dr();
+}
+
+/* ⑦ Balloon */
+function bBl(){
+  const sec=document.getElementById('s_bl');if(!sec.classList.contains('vis'))return;
+  mL(sec);const c=gC(sec,'cBl'),g=c.getContext('2d');const W=c.width,H=c.height;
+  g._fs=W*.02;
+  let t1=50,t2=25,bh=40;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Balloon · Example 3</h2>
+    <p>From building height h: balloon at elevation θ₁, rope foot at depression θ₂.</p>
+    <div class=ct><label>θ₁° elev</label><input type=range min=20 max=70 step=1 value=50 id=bl1><input type=number min=20 max=70 step=1 value=50 class=ni id=bl1i></div>
+    <div class=ct><label>θ₂° depr</label><input type=range min=10 max=50 step=1 value=25 id=bl2><input type=number min=10 max=50 step=1 value=25 class=ni id=bl2i></div>
+    <div class=ct><label>h (ft)</label><input type=range min=20 max=80 step=1 value=40 id=blH><input type=number min=20 max=80 step=1 value=40 class=ni id=blHi></div>
+    <div class=fm id=blV></div>`;
+  function dr(){
+    g.clearRect(0,0,W,H);drawPaperGrid(g,W,H);
+    const gy=H*0.78,scale=(W*0.35)/80;
+    drawSkyGround(g,W,H,gy);
+    const bldX=W*0.2,hPx=bh*scale*0.5,topY=gy-hPx,eyeY=topY+14;
+    const balX=bldX+80+bh/Math.tan(Rd(t1))*scale*0.35,balY=eyeY-55;
+    const ropeX=bldX+bh/Math.tan(Rd(t2))*scale*0.3;
+    drawSchool(g,bldX,gy,hPx);drawBalloon(g,balX,balY);
+    g.strokeStyle='#78350f';g.lineWidth=1.8;g.setLineDash([4,3]);
+    g.beginPath();g.moveTo(balX,balY+28);g.lineTo(ropeX,gy);g.stroke();g.setLineDash([]);
+    g.fillStyle='#57534e';g.beginPath();g.arc(ropeX,gy,5,0,PI*2);g.fill();
+    drawPerson(g,bldX,topY+24,0.78);
+    drawHoriz(g,bldX,eyeY,balX+30);
+    drawSight(g,bldX,eyeY,balX,balY);drawSight(g,bldX,eyeY,ropeX,gy);
+    drawAngleArc(g,bldX,eyeY,W*.04,t1,'θ₁='+t1+'°');
+    drawAngleArc(g,bldX,eyeY,W*.055,t2,'θ₂='+t2+'°');
+    drawDimV(g,bldX-W*.038,gy,topY,'h='+bh+' ft');
+    document.getElementById('blV').innerHTML=K('\\angle BDA = \\angle DAE')+' (why?) · θ₁='+t1+'° · θ₂='+t2+'°';
+  }
+  sA('bl1','bl1i',v=>{t1=v;dr()},20,70);
+  sA('bl2','bl2i',v=>{t2=v;dr()},10,50);
+  sA('blH','blHi',v=>{bh=v;dr()},20,80);
+  dr();
+}
+
+/* ⑧ Reference */
+function bRf(){
+  const sec=document.getElementById('s_rf');if(!sec.classList.contains('vis'))return;
+  mL(sec);
+  sec.querySelector('.lt').innerHTML=`<div style="overflow:auto;width:100%;height:100%;padding:1rem;font-family:var(--mo);font-size:.78rem;line-height:1.9;color:var(--t2)">
+    <h2 style="font-family:var(--mo);color:var(--tx);font-size:1rem;margin-bottom:.6rem">Key Definitions</h2>
+    <p style="font-family:var(--f);font-size:.85rem;line-height:1.6;margin-bottom:1rem">
+      <b>Line of sight</b> — from the observer's eye to the object.<br>
+      <b>Angle of elevation</b> — angle above the horizontal (looking up).<br>
+      <b>Angle of depression</b> — angle below the horizontal (looking down).
+    </p>
+    <div class=fm style="color:var(--tx);line-height:2.2">
+      ${KD('h = d \\tan\\theta \\quad \\text{(elevation)}')} 
+      ${KD('d = h \\cot\\theta \\quad \\text{(horizontal distance)}')}
+      ${KD('x = \\dfrac{h}{\\sin\\theta} \\quad \\text{(slant distance)}')}
+    </div>
+    <h2 style="font-family:var(--mo);color:var(--tx);font-size:.95rem;margin:1rem 0 .5rem">Standard Values</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.72rem">
+      <tr style="background:#f5f5f4"><th style="border:1px solid var(--bd);padding:6px">θ</th><th style="border:1px solid var(--bd);padding:6px">sin</th><th style="border:1px solid var(--bd);padding:6px">cos</th><th style="border:1px solid var(--bd);padding:6px">tan</th></tr>
+      <tr><td style="border:1px solid var(--bd);padding:6px;text-align:center">30°</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">1/2</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">√3/2</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">1/√3</td></tr>
+      <tr><td style="border:1px solid var(--bd);padding:6px;text-align:center">45°</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">1/√2</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">1/√2</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">1</td></tr>
+      <tr><td style="border:1px solid var(--bd);padding:6px;text-align:center">60°</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">√3/2</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">1/2</td><td style="border:1px solid var(--bd);padding:6px;text-align:center">√3</td></tr>
+    </table>
+  </div>`;
+  sec.querySelector('.rt').innerHTML=`
+    <h2>Chapter Summary</h2>
+    <p>Heights and distances are found by drawing right triangles and choosing the correct ratio: tan for opposite/adjacent, sin for opposite/hypotenuse.</p>
+    <div class=fm style="color:var(--t2);font-size:.76rem;line-height:1.8">
+      <b style="color:var(--ac)">Example 4:</b> Pole, 60°, 8 m → h = 8√3 m<br>
+      <b style="color:var(--ac)">Example 5:</b> Helicopter 500 m, 45° → x = 500√2 m<br>
+      <b style="color:var(--ac)">§ 12.3:</b> Two triangles → h = 11√3/(√3−1) m
+    </div>
+    <p class=hint>Neglect observer height unless given. Treat towers, trees, buildings as linear.</p>`;
+}
+
+init();
+</script>
+</body>
+</html>
